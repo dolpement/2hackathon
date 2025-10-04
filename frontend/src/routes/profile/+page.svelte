@@ -16,8 +16,7 @@
   };
 
   let applications = [
-    { name: "Человек Человеков", date: "2024-01-15", details: "Особенности: рост, глаза, волосы, во что одет и тд" },
-    { name: "Плакеты найти связь", location: "в лесу" }
+    { name: "Человек Человеков", date: "2024-01-15", details: "Особенности: рост, глаза, волосы, во что одет и тд" }
   ];
 
   let publications = [
@@ -135,7 +134,7 @@
       <h3>Публикации</h3>
       <div id="publicationsGrid" class="publications-grid">
         {#each publications as publication}
-          <div class="publication" on:click={() => alert(`Открыть ${publication.title}`)}>
+          <div class="publication" on:click={() => alert(`Открыть ${publication.title}. Эта публикация про поиски в лесу`)}>
             {publication.title}
           </div>
         {/each}
