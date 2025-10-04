@@ -43,8 +43,13 @@
   }
 </script>
 
+<!-- Кнопка настроек в правом верхнем углу -->
+<a href="/volunteer" class="settings-button">⚙️ Настройки</a>
+
+<br>
 <div class="container">
   <!-- Левая колонка - профиль -->
+  <div class="profile1">
   <div class="profile">
     <img id="avatar" src="" alt="Фото" class="avatar" />
     <h2 id="fio">{volunteer.name}</h2>
@@ -56,6 +61,8 @@
       <span>🌲</span>
       <span>🎒</span>
     </div>
+  </div>
+<br>
 
     {#if volunteer.isMedic}
       <p id="medicStatus">✔ Медицинский работник</p>
@@ -89,18 +96,6 @@
       <h3>Доступные поиски</h3>
       <img src="https://tile.openstreetmap.org/10/560/380.png" alt="Карта" />
       <div class="searches-list">
-        {#each applications as application}
-          <div class="application-card">
-            <h4>{application.name}</h4>
-            {#if application.date}
-              <p>Дата пропажи: {application.date}</p>
-            {/if}
-            <p>{application.details}</p>
-            {#if application.location}
-              <p class="location">📍 {application.location}</p>
-            {/if}
-          </div>
-        {/each}
       </div>
     </div>
 
@@ -116,13 +111,16 @@
 
     <!-- Заявки на вакансии -->
     <div class="applications">
-      <h3>Заявки на вакансии</h3>
+      <h3>Заявки на поиск</h3>
       <div id="applicationsList">
         {#each applications as application, i}
           <div class="application-card">
             <strong>{application.name}</strong>
             {#if application.date}
               <p>Дата: {application.date}</p>
+            {/if}
+            {#if application.details}
+              <p>Детали: {application.details}</p>
             {/if}
           </div>
         {/each}
@@ -144,6 +142,31 @@
 </div>
 
 <style>
+  /* Стили для кнопки настроек */
+  .settings-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ff8800;
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 8px rgba(255, 136, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .settings-button:hover {
+    background: #e57a00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 136, 0, 0.4);
+  }
+
   body {
     font-family: "Inter", sans-serif;
     background-color: #f8f9fa;
@@ -172,13 +195,22 @@
     height: fit-content;
     position: sticky;
     top: 20px;
-    max-height: 230px;
+  }
 
+    .profile1 {
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
   }
 
   .avatar {
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     background: #e0e0e0;
   }
@@ -349,7 +381,12 @@
 
   @media (max-width: 900px) {
     .container {
-      grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
     }
     
     .profile {
