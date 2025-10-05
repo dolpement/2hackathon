@@ -27,6 +27,8 @@
   }
 </script>
 
+<br>
+
 <div class="container">
   <!-- Основной контент по центру -->
   <div class="main-content">
@@ -93,6 +95,7 @@
     </div>
   </div>
 </div>
+<br>
 
 <style>
   body {
