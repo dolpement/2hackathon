@@ -21,6 +21,11 @@ body {
   padding: 1rem 0;
 }
 
+.header-image img {
+    height:60px;
+    width: auto;
+}
+
 .nav {
   max-width: 1200px;
   margin: 0 auto;
