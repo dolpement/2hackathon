@@ -257,6 +257,8 @@
     </div>
 </div>
 
+<br>
+
 <style>
     .skills-list {
         margin-left: 20px;
