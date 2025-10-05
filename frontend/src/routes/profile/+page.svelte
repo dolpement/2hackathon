@@ -193,7 +193,7 @@
     flex-direction: column;
     align-items: flex-start;
     height: fit-content;
-    position: sticky;
+    position: state;
     top: 20px;
   }
 
@@ -204,7 +204,7 @@
     flex-direction: column;
     align-items: flex-start;
     height: fit-content;
-    position: sticky;
+    position: state;
     top: 20px;
   }
 
