@@ -62,7 +62,6 @@
 					<span class="button-text">Войти</span>
 				</button>
 			</form>
-			<a class="guest-login" href="profile">Войти как гость</a>
 		</div>
 
 		<!-- Если введён неверный логин или пароль, отображается сообщение об ошибке -->
