@@ -201,6 +201,25 @@
 		align-items: center;
 	}
 
+		.submit-button:hover {
+		padding: 12px;
+		margin-top: 16px; /* Отступ от поля ввода пароля */
+
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 24px;
+
+		border: none;
+		border-radius: 12px;
+
+		color: #ff8800;
+		background-color: #fafafa;
+		
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
 	.button-text {
 		text-align: center;
 		width: 100%;

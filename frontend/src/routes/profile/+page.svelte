@@ -1,5 +1,6 @@
 <script>
   let volunteer = {
+    photo: '/photo_2025-10-04_21-11-53-no-bg-preview (carve.photos).png',
     name: "Волонтёров Волонтёр Волонтёрович",
     searches: 29,
     achievements: "3/50",
@@ -49,7 +50,7 @@
     <!-- Левая колонка - профиль -->
     <div class="profile1">
       <div class="profile">
-        <img id="avatar" src="" alt="Фото" class="avatar" />
+        <img id="avatar" src={volunteer.photo} alt="Фото" class="avatar" />
         <h2 id="fio">{volunteer.name}</h2>
         <p>Поиски: <b id="searches">{volunteer.searches}</b></p>
         <p>Ачивки: <b id="achievements">{volunteer.achievements}</b></p>
