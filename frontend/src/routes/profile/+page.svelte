@@ -73,7 +73,7 @@
       <p><b>Квалификация:</b> <span id="qualification">{volunteer.qualification}</span></p>
       <p><b>Курсы:</b> <span id="courses">{volunteer.courses}</span></p>
       <p><b>Типы поисков:</b> <span id="types">{volunteer.types}</span></p>
-      <p id="childrenSearch">{volunteer.childrenSearch}</p>
+      <p id="childrenSearch"><b>{volunteer.childrenSearch}</b></p>
       <p><b>Оборудование:</b> <span id="equipment">{volunteer.equipment}</span></p>
       <p><b>О себе:</b> <span id="about">{volunteer.about}</span></p>
       <p><b>Контакты:</b> <span id="contacts">{volunteer.contacts}</span></p>
@@ -112,7 +112,7 @@
     <!-- Заявки на вакансии -->
     <div class="applications">
       <h3>Заявки на поиск</h3>
-      <div id="applicationsList">
+      <a href="../search" id="applicationsList">
         {#each applications as application, i}
           <div class="application-card">
             <strong>{application.name}</strong>
@@ -124,7 +124,7 @@
             {/if}
           </div>
         {/each}
-      </div>
+        </a>
     </div>
 
     <!-- Публикации -->
@@ -296,23 +296,48 @@
     gap: 10px;
   }
 
-  .application-card {
-    background: #f8f8f8;
-    border-radius: 10px;
-    padding: 15px;
-    border-left: 4px solid #ff8800;
-  }
+.application-card {
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 15px;
+  border-left: 4px solid #ff8800;
+  cursor: pointer; /* Добавляем курсор указателя */
+  transition: all 0.3s ease; /* Плавные переходы */
+  border: none; /* Убираем стандартные границы если есть */
+  color: #111;
+  text-decoration: none;
+}
 
-  .application-card h4 {
-    margin: 0 0 8px 0;
-    color: #333;
-  }
+.application-card:hover {
+  background: #ff8800; /* Меняем фон при наведении */
+  color: white; /* Меняем цвет текста */
+  transform: translateY(-2px); /* Легкий подъем */
+  box-shadow: 0 4px 8px rgba(255, 136, 0, 0.3); /* Тень при наведении */
+  text-decoration: none; 
+}
 
-  .application-card p {
-    margin: 4px 0;
-    font-size: 14px;
-    color: #666;
-  }
+.application-card h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  text-decoration: none; 
+}
+
+.application-card:hover h4 {
+  color: white; /* Белый текст при наведении */
+  text-decoration: none; 
+}
+
+.application-card p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #666;
+  text-decoration: none; 
+}
+
+.application-card:hover p {
+  color: white; /* Белый текст при наведении */
+  text-decoration: none; 
+}
 
   .location {
     color: #ff8800;
