@@ -50,3 +50,11 @@ async def delete_equipment(equipment_id: int, db: AsyncSession = Depends(get_db)
         raise HTTPException(status_code=404, detail="Equipment not found")
     await crud.delete_equipment(db, equipment_id)
     return {"detail": "Equipment deleted"}
+
+
+@router.get("/owner/{person_id}", response_model=List[schemas.EquipmentRead])
+async def read_equipment_by_responsible_person(person_id: int, db: AsyncSession = Depends(get_db)):
+    equipments = await crud.get_equipment_by_responsible_person(db, person_id)
+    if not equipments:
+        raise HTTPException(status_code=404, detail="No equipment found for this person")
+    return equipments

@@ -1,10 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
 from backend.routers import users, volunteers, volunteer_skills, certificates, volunteer_locations, equipments, \
     volunteer_availabilities, search_operations
 
 app = FastAPI(title="VolunteerMap API")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # или 3000
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Пример health endpoint

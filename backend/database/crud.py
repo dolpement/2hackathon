@@ -208,6 +208,13 @@ async def update_equipment(db: AsyncSession, equipment_id: int, equipment_update
     await db.commit()
 
 
+async def get_equipment_by_responsible_person(db: AsyncSession, person_id: int) -> List[models.Equipment]:
+    result = await db.execute(
+        select(models.Equipment).where(models.Equipment.responsible_person_id == person_id)
+    )
+    return result.scalars().all()
+
+
 async def delete_equipment(db: AsyncSession, equipment_id: int):
     await db.execute(delete(models.Equipment).where(models.Equipment.id == equipment_id))
     await db.commit()

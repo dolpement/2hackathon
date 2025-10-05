@@ -1,46 +1,142 @@
 <script>
-  let volunteer = {
-    name: "Волонтёров Волонтёр Волонтёрович",
-    searches: 29,
-    achievements: "3/50",
-    experience: "начинающий",
-    qualification: "связист, эпизод",
-    courses: "первая медицинская помощь",
-    types: "Дневные и ночные поиски",
-    childrenSearch: "Поиск детей",
-    equipment: "машина, экипировка для леса, ломпас",
-    about: "учусь в университете МСИСИ, работать, люблю детей",
-    contacts: "telegram",
-    isMedic: true,
-    accountVerified: false
-  };
+    import {onMount} from "svelte";
 
-  let applications = [
-    { name: "Человек Человеков", date: "2024-01-15", details: "Особенности: рост, глаза, волосы, во что одет и тд" }
-  ];
+    onMount(() => {
+        const script = document.createElement("script");
+        script.src = 'https://mapgl.2gis.com/api/js/v1';
+        script.onload = () => {
+            const map = new mapgl.Map('map-container', {
+                center: [37.928327, 55.595569], // Москва, пример
+                zoom: 12,
+                key: '8f104049-075f-4c47-817b-b8b450854d86' // если нужен
+            });
 
-  let publications = [
-    { title: "Публикация 1" },
-    { title: "Публикация 2" },
-    { title: "Публикация 3" }
-  ];
+            const coords = [
+                [37.978449, 55.607762],
+                [37.880064, 55.678084],
+                [37.841701, 55.633487],
+                [37.862599, 55.685267],
+                [37.862599, 55.685267]
+            ];
+            coords.forEach((coord) => {
+                const marker = new mapgl.Marker(map, {
+                    coordinates: coord,
+                });
+            });
+            const circle = new mapgl.Circle(map, {
+                coordinates: [37.928327, 55.595569],
+                radius: 3000,
+                color: '#ff000055',
+                strokeWidth: 2,
+                strokeColor: '#ffffff',
+            });
+        };
+        document.body.appendChild(script);
+    })
 
-  function verifyAccount() {
-    volunteer.accountVerified = true;
-    // Здесь может быть API запрос для подтверждения
-  }
+    /* let volunteer = {
+        name: "Волонтёров Волонтёр Волонтёрович",
+        searches: 29,
+        achievements: "3/50",
+        experience: "начинающий",
+        qualification: "связист, эпизод",
+        courses: "первая медицинская помощь",
+        types: "Дневные и ночные поиски",
+        childrenSearch: "Поиск детей",
+        equipment: "машина, экипировка для леса, ломпас",
+        about: "учусь в университете МСИСИ, работать, люблю детей",
+        contacts: "telegram",
+        isMedic: true,
+        accountVerified: false
+    }; */
 
-  function showTips() {
-    alert("Советы по работе с сервисом");
-  }
+    let applications = [];
+    let loading = true;
+    let error = null;
 
-  function startCourses() {
-    alert("Переход к курсам");
-  }
+    onMount(async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/search-operations');
+            applications = await res.json();
+        } catch (e) {
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    })
 
-  function writeArticle() {
-    alert("Написание статьи");
-  }
+    let volunteer = [];
+
+    onMount(async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/volunteers/1');
+            volunteer = await res.json();
+            console.log(JSON.stringify(volunteer));
+        } catch (e) {
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    })
+
+    let skills = [];
+    onMount(async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/volunteer-skills/volunteer/1');
+            skills = await res.json();
+        } catch (e) {
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    })
+
+    let certificates = [];
+    onMount(async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/certificates/owner/1');
+            certificates = await res.json();
+        } catch (e) {
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    })
+
+    let equipments = [];
+    onMount(async () => {
+        try {
+            const res = await fetch('http://127.0.0.1:8000/equipments/owner/1');
+            equipments = await res.json();
+        } catch (e) {
+            error = e.message;
+        } finally {
+            loading = false;
+        }
+    })
+
+    let publications = [
+        {title: "Публикация 1"},
+        {title: "Публикация 2"},
+        {title: "Публикация 3"}
+    ];
+
+    function verifyAccount() {
+        volunteer.accountVerified = true;
+        // Здесь может быть API запрос для подтверждения
+    }
+
+    function showTips() {
+        alert("Советы по работе с сервисом");
+    }
+
+    function startCourses() {
+        alert("Переход к курсам");
+    }
+
+    function writeArticle() {
+        alert("Написание статьи");
+    }
 </script>
 
 <!-- Кнопка настроек в правом верхнем углу -->
@@ -48,382 +144,414 @@
 
 <br>
 <div class="container">
-  <!-- Левая колонка - профиль -->
-  <div class="profile1">
-  <div class="profile">
-    <img id="avatar" src="" alt="Фото" class="avatar" />
-    <h2 id="fio">{volunteer.name}</h2>
-    <p>Поиски: <b id="searches">{volunteer.searches}</b></p>
-    <p>Ачивки: <b id="achievements">{volunteer.achievements}</b></p>
+    <!-- Левая колонка - профиль -->
+    <div class="profile1">
+        <div class="profile">
+            <img id="avatar" src="/avatar.png" alt="Фото" class="avatar"/>
+            <h2 id="fio">{volunteer.full_name}</h2>
+            <p><b>Опыт (в годах):</b> {volunteer.experience_years}</p>
 
-    <div class="achievements">
-      <span>🏅</span>
-      <span>🌲</span>
-      <span>🎒</span>
-    </div>
-  </div>
-<br>
+            <div class="achievements">
+                <p><b>Ачивки:</b></p>
+                <span>🏅</span>
+                <span>🌲</span>
+                <span>🎒</span>
+            </div>
+        </div>
+        <br>
 
-    {#if volunteer.isMedic}
-      <p id="medicStatus">✔ Медицинский работник</p>
-    {/if}
+        {#if volunteer.isMedic}
+            <p id="medicStatus">✔ Медицинский работник</p>
+        {/if}
 
-    <div class="section orange">
-      <p><b>Опыт:</b> <span id="experience">{volunteer.experience}</span></p>
-      <p><b>Квалификация:</b> <span id="qualification">{volunteer.qualification}</span></p>
-      <p><b>Курсы:</b> <span id="courses">{volunteer.courses}</span></p>
-      <p><b>Типы поисков:</b> <span id="types">{volunteer.types}</span></p>
-      <p id="childrenSearch"><b>{volunteer.childrenSearch}</b></p>
-      <p><b>Оборудование:</b> <span id="equipment">{volunteer.equipment}</span></p>
-      <p><b>О себе:</b> <span id="about">{volunteer.about}</span></p>
-      <p><b>Контакты:</b> <span id="contacts">{volunteer.contacts}</span></p>
-    </div>
+        <div class="section orange">
+            <p><b>Описание:</b> <span id="experience">{volunteer.description}</span></p>
+            <p><b>Навыки:</b></p> <span id="qualification">
+                <ul class="skills-list">
+                    {#each skills as skill, i}
+                        <li>{skill.description}</li>
+                    {/each}
+                </ul>
+            </span>
+            <p><b>Сертификаты:</b></p> <span id="certificates">
+                <ul class="skills-list">
+                    {#each certificates as certificate, i}
+                        <li>{certificate.name}</li>
+                    {/each}
+                </ul>
+            </span>
+            <!--<p><b>Типы поисков:</b> <span id="types">{volunteer.types}</span></p>
+            <p id="childrenSearch"><b>{volunteer.childrenSearch}</b></p>-->
+            <p><b>Оборудование:</b></p> <span id="equipments">
+                <ul class="skills-list">
+                    {#each equipments as equipment, i}
+                        <li>{equipment.description}</li>
+                    {/each}
+                </ul>
+            </span>
+            <p><b>Почта:</b> <span id="mail">{volunteer.email}</span></p>
+            <p><b>Телефон:</b> <span id="phone">{volunteer.phone}</span></p>
+        </div>
 
-    <div class="section white">
-      <p>✓ Доступен к поискам</p>
-      {#if !volunteer.accountVerified}
-        <button id="verify" on:click={verifyAccount}>Подтверди аккаунт</button>
-      {:else}
-        <p style="color: green;">✓ Аккаунт подтверждён</p>
-      {/if}
-    </div>
-  </div>
-
-  <!-- Правая колонка -->
-  <div class="right">
-    <!-- Карта с поисками -->
-    <div class="map-block">
-      <h3>Доступные поиски</h3>
-      <img src="https://tile.openstreetmap.org/10/560/380.png" alt="Карта" />
-      <div class="searches-list">
-      </div>
-    </div>
-
-    <!-- Работа с платформой -->
-    <div class="work-platform">
-      <h3>Работа с платформой</h3>
-      <div class="work-buttons">
-        <button on:click={showTips}>Советы по работе с сервисом</button>
-        <button on:click={startCourses}>Пройди курсы</button>
-        <button on:click={writeArticle}>Напиши статью</button>
-      </div>
-    </div>
-
-    <!-- Заявки на вакансии -->
-    <div class="applications">
-      <h3>Заявки на поиск</h3>
-      <a href="../search" id="applicationsList">
-        {#each applications as application, i}
-          <div class="application-card">
-            <strong>{application.name}</strong>
-            {#if application.date}
-              <p>Дата: {application.date}</p>
+        <div class="section white">
+            <p>✓ Доступен к поискам</p>
+            {#if !volunteer.accountVerified}
+                <button id="verify" on:click={verifyAccount}>Подтверди аккаунт</button>
+            {:else}
+                <p style="color: green;">✓ Аккаунт подтверждён</p>
             {/if}
-            {#if application.details}
-              <p>Детали: {application.details}</p>
-            {/if}
-          </div>
-        {/each}
-        </a>
+        </div>
     </div>
 
-    <!-- Публикации -->
-    <div class="publications">
-      <h3>Публикации</h3>
-      <div id="publicationsGrid" class="publications-grid">
-        {#each publications as publication}
-          <div class="publication" on:click={() => alert(`Открыть ${publication.title}. Эта публикация про поиски в лесу`)}>
-            {publication.title}
-          </div>
-        {/each}
-      </div>
+    <!-- Правая колонка -->
+    <div class="right">
+        <!-- Карта с поисками -->
+        <div class="map-block">
+            <h3>Доступные поиски</h3>
+            <div id="map-container"></div>
+            <div class="searches-list">
+            </div>
+        </div>
+
+        <!-- Работа с платформой -->
+        <div class="work-platform">
+            <h3>Работа с платформой</h3>
+            <div class="work-buttons">
+                <button on:click={showTips}>Советы по работе с сервисом</button>
+                <button on:click={startCourses}>Пройди курсы</button>
+                <button on:click={writeArticle}>Напиши статью</button>
+            </div>
+        </div>
+
+        <!-- Заявки на вакансии -->
+        <div class="applications">
+            <h3>Заявки на поиск</h3>
+            {#each applications as application, i}
+                <button
+                        class="application-card"
+                        on:click={() => window.location.href = '/search'}
+                >
+                    <strong>{application.request_info}</strong>
+                    {#if application.meeting_time}
+                        <p>Дата: {application.meeting_time}</p>
+                    {/if}
+                    {#if application.report}
+                        <p>Детали: {application.report}</p>
+                    {/if}
+                </button>
+            {/each}
+        </div>
+
+        <!-- Публикации -->
+        <div class="publications">
+            <h3>Публикации</h3>
+            <div id="publicationsGrid" class="publications-grid">
+                {#each publications as publication}
+                    <div class="publication"
+                         on:click={() => alert(`Открыть ${publication.title}. Эта публикация про поиски в лесу`)}>
+                        {publication.title}
+                    </div>
+                {/each}
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <style>
-  /* Стили для кнопки настроек */
-  .settings-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #ff8800;
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    border-radius: 25px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 2px 8px rgba(255, 136, 0, 0.3);
-    transition: all 0.3s ease;
-    z-index: 1000;
-  }
+    .skills-list {
+        margin-left: 20px;
+    }
 
-  .settings-button:hover {
-    background: #e57a00;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 136, 0, 0.4);
-  }
+    #map-container {
+        height: 500px;
+        width: 100%;
+    }
 
-  body {
-    font-family: "Inter", sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 20px;
-    color: #111;
-  }
+    /* Стили для кнопки настроек */
+    .settings-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ff8800;
+        color: white;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 2px 8px rgba(255, 136, 0, 0.3);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
 
-  .container {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+    .settings-button:hover {
+        background: #e57a00;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 136, 0, 0.4);
+    }
 
-  /* Левая колонка */
-  .profile {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: fit-content;
-    position: state;
-    top: 20px;
-  }
+    body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+        color: #111;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Левая колонка */
+    .profile {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        height: fit-content;
+        position: state;
+        width: 100%;
+        top: 20px;
+    }
 
     .profile1 {
-    border-radius: 20px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    height: fit-content;
-    position: state;
-    top: 20px;
-  }
-
-  .avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: #e0e0e0;
-  }
-
-  .profile h2 {
-    font-size: 16px;
-    margin: 10px 0 5px;
-  }
-
-  .profile p {
-    margin: 5px 0;
-    font-size: 14px;
-  }
-
-  .achievements {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0;
-  }
-
-  .achievements span {
-    width: 30px;
-    height: 30px;
-    background: #eef6ff;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-
-  .section {
-    margin-top: 10px;
-    padding: 15px;
-    border-radius: 10px;
-    width: 100%;
-  }
-
-  .section.orange {
-    background: #ff8800;
-    color: black;
-  }
-
-  .section.white button {
-    background: #ff8800;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-    font-weight: bold;
-  }
-
-  .section.white button:hover {
-    background: #e57a00;
-  }
-
-  /* Правая колонка */
-  .right {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .map-block {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-
-  .map-block img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 15px;
-  }
-
-  .searches-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-.application-card {
-  background: #f8f8f8;
-  border-radius: 10px;
-  padding: 15px;
-  border-left: 4px solid #ff8800;
-  cursor: pointer; /* Добавляем курсор указателя */
-  transition: all 0.3s ease; /* Плавные переходы */
-  border: none; /* Убираем стандартные границы если есть */
-  color: #111;
-  text-decoration: none;
-}
-
-.application-card:hover {
-  background: #ff8800; /* Меняем фон при наведении */
-  color: white; /* Меняем цвет текста */
-  transform: translateY(-2px); /* Легкий подъем */
-  box-shadow: 0 4px 8px rgba(255, 136, 0, 0.3); /* Тень при наведении */
-  text-decoration: none; 
-}
-
-.application-card h4 {
-  margin: 0 0 8px 0;
-  color: #333;
-  text-decoration: none; 
-}
-
-.application-card:hover h4 {
-  color: white; /* Белый текст при наведении */
-  text-decoration: none; 
-}
-
-.application-card p {
-  margin: 4px 0;
-  font-size: 14px;
-  color: #666;
-  text-decoration: none; 
-}
-
-.application-card:hover p {
-  color: white; /* Белый текст при наведении */
-  text-decoration: none; 
-}
-
-  .location {
-    color: #ff8800;
-    font-weight: bold;
-  }
-
-  .work-platform {
-    background: #ff8800;
-    border-radius: 20px;
-    padding: 20px;
-    color: white;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-
-  .work-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-  }
-
-  .work-buttons button {
-    flex: 1;
-    background: white;
-    color: #111;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: transform 0.2s;
-  }
-
-  .work-buttons button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  }
-
-  .applications, .publications {
-    background: white;
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-
-  .publications-grid {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .publication {
-    flex: 1;
-    background: #001aff;
-    color: white;
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-
-  .publication:hover {
-    transform: translateY(-2px);
-    background: #0011cc;
-  }
-
-  @media (max-width: 900px) {
-    .container {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        height: fit-content;
+        position: state;
+        top: 20px;
     }
-    
-    .profile {
-      position: static;
+
+    .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #e0e0e0;
     }
-    
+
+    .profile h2 {
+        font-size: 16px;
+        margin: 10px 0 5px;
+    }
+
+    .profile p {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .achievements {
+        display: flex;
+        gap: 8px;
+        margin: 10px 0;
+    }
+
+    .achievements span {
+        width: 30px;
+        height: 30px;
+        background: #eef6ff;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+    }
+
+    .section {
+        margin-top: 10px;
+        padding: 15px;
+        border-radius: 10px;
+        width: 100%;
+    }
+
+    .section.orange {
+        background: #ff8800;
+        color: black;
+    }
+
+    .section.white button {
+        background: #ff8800;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .section.white button:hover {
+        background: #e57a00;
+    }
+
+    /* Правая колонка */
+    .right {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .map-block {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .map-block img {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .searches-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .application-card {
+        background: #f8f8f8;
+        border-radius: 10px;
+        padding: 15px;
+        border-left: 4px solid #ff8800;
+        cursor: pointer; /* Добавляем курсор указателя */
+        transition: all 0.3s ease; /* Плавные переходы */
+        border: none; /* Убираем стандартные границы если есть */
+        color: #111;
+        text-decoration: none;
+        width: 100%;
+        text-align: left;
+    }
+
+    .application-card:hover {
+        background: #ff8800; /* Меняем фон при наведении */
+        color: white; /* Меняем цвет текста */
+        transform: translateY(-2px); /* Легкий подъем */
+        box-shadow: 0 4px 8px rgba(255, 136, 0, 0.3); /* Тень при наведении */
+        text-decoration: none;
+    }
+
+    .application-card h4 {
+        margin: 0 0 8px 0;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .application-card:hover h4 {
+        color: white; /* Белый текст при наведении */
+        text-decoration: none;
+    }
+
+    .application-card p {
+        margin: 4px 0;
+        font-size: 14px;
+        color: #666;
+        text-decoration: none;
+    }
+
+    .application-card:hover p {
+        color: white; /* Белый текст при наведении */
+        text-decoration: none;
+    }
+
+    .location {
+        color: #ff8800;
+        font-weight: bold;
+    }
+
+    .work-platform {
+        background: #ff8800;
+        border-radius: 20px;
+        padding: 20px;
+        color: white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
     .work-buttons {
-      flex-direction: column;
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
     }
-    
+
+    .work-buttons button {
+        flex: 1;
+        background: white;
+        color: #111;
+        border: none;
+        border-radius: 10px;
+        padding: 12px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: transform 0.2s;
+    }
+
+    .work-buttons button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .applications, .publications {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
     .publications-grid {
-      flex-direction: column;
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
     }
-  }
+
+    .publication {
+        flex: 1;
+        background: #001aff;
+        color: white;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .publication:hover {
+        transform: translateY(-2px);
+        background: #0011cc;
+    }
+
+    @media (max-width: 900px) {
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .profile {
+            position: static;
+        }
+
+        .work-buttons {
+            flex-direction: column;
+        }
+
+        .publications-grid {
+            flex-direction: column;
+        }
+    }
 </style>
