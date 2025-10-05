@@ -62,7 +62,6 @@
 					<span class="button-text">Войти</span>
 				</button>
 			</form>
-			<a class="guest-login" href="profile">Войти как гость</a>
 		</div>
 
 		<!-- Если введён неверный логин или пароль, отображается сообщение об ошибке -->
@@ -195,6 +194,25 @@
 
 		color: #ffffff;
 		background-color: #ff8800;
+		
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+		.submit-button:hover {
+		padding: 12px;
+		margin-top: 16px; /* Отступ от поля ввода пароля */
+
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 24px;
+
+		border: none;
+		border-radius: 12px;
+
+		color: #ff8800;
+		background-color: #fafafa;
 		
 		display: flex;
 		justify-content: center;
