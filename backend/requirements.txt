@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+sqlalchemy
+cryptography
+aiomysql
+python-jose
+passlib
+python-multipart
+bcrypt
+pydantic
+pydantic[email]
+pytest
+httpx
+aiosqlite
+pytest-asyncio
+pysqlite
