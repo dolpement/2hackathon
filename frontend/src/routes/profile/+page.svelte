@@ -43,122 +43,149 @@
   }
 </script>
 
-<!-- Кнопка настроек в правом верхнем углу -->
-<a href="/volunteer" class="settings-button">⚙️ Настройки</a>
+<div class="main-container">
+  <!-- Основной контент в две колонки -->
+  <div class="container">
+    <!-- Левая колонка - профиль -->
+    <div class="profile1">
+      <div class="profile">
+        <img id="avatar" src="" alt="Фото" class="avatar" />
+        <h2 id="fio">{volunteer.name}</h2>
+        <p>Поиски: <b id="searches">{volunteer.searches}</b></p>
+        <p>Ачивки: <b id="achievements">{volunteer.achievements}</b></p>
 
-<br>
-<div class="container">
-  <!-- Левая колонка - профиль -->
-  <div class="profile1">
-  <div class="profile">
-    <img id="avatar" src="" alt="Фото" class="avatar" />
-    <h2 id="fio">{volunteer.name}</h2>
-    <p>Поиски: <b id="searches">{volunteer.searches}</b></p>
-    <p>Ачивки: <b id="achievements">{volunteer.achievements}</b></p>
+        <div class="achievements">
+          <span>🏅</span>
+          <span>🌲</span>
+          <span>🎒</span>
+        </div>
+      </div>
+      <br>
 
-    <div class="achievements">
-      <span>🏅</span>
-      <span>🌲</span>
-      <span>🎒</span>
-    </div>
-  </div>
-<br>
-
-    {#if volunteer.isMedic}
-      <p id="medicStatus">✔ Медицинский работник</p>
-    {/if}
-
-    <div class="section orange">
-      <p><b>Опыт:</b> <span id="experience">{volunteer.experience}</span></p>
-      <p><b>Квалификация:</b> <span id="qualification">{volunteer.qualification}</span></p>
-      <p><b>Курсы:</b> <span id="courses">{volunteer.courses}</span></p>
-      <p><b>Типы поисков:</b> <span id="types">{volunteer.types}</span></p>
-      <p id="childrenSearch"><b>{volunteer.childrenSearch}</b></p>
-      <p><b>Оборудование:</b> <span id="equipment">{volunteer.equipment}</span></p>
-      <p><b>О себе:</b> <span id="about">{volunteer.about}</span></p>
-      <p><b>Контакты:</b> <span id="contacts">{volunteer.contacts}</span></p>
-    </div>
-
-    <div class="section white">
-      <p>✓ Доступен к поискам</p>
-      {#if !volunteer.accountVerified}
-        <button id="verify" on:click={verifyAccount}>Подтверди аккаунт</button>
-      {:else}
-        <p style="color: green;">✓ Аккаунт подтверждён</p>
+      {#if volunteer.isMedic}
+        <p id="medicStatus">✔ Медицинский работник</p>
       {/if}
+
+      <div class="section orange">
+        <p><b>Опыт:</b> <span id="experience">{volunteer.experience}</span></p>
+        <p><b>Квалификация:</b> <span id="qualification">{volunteer.qualification}</span></p>
+        <p><b>Курсы:</b> <span id="courses">{volunteer.courses}</span></p>
+        <p><b>Типы поисков:</b> <span id="types">{volunteer.types}</span></p>
+        <p id="childrenSearch"><b>{volunteer.childrenSearch}</b></p>
+        <p><b>Оборудование:</b> <span id="equipment">{volunteer.equipment}</span></p>
+        <p><b>О себе:</b> <span id="about">{volunteer.about}</span></p>
+        <p><b>Контакты:</b> <span id="contacts">{volunteer.contacts}</span></p>
+      </div>
+
+      <div class="section white">
+        <p>✓ Доступен к поискам</p>
+        {#if !volunteer.accountVerified}
+          <button id="verify" on:click={verifyAccount}>Подтверди аккаунт</button>
+        {:else}
+          <p style="color: green;">✓ Аккаунт подтверждён</p>
+        {/if}
+      </div>
+    </div>
+
+    <!-- Правая колонка -->
+    <div class="right">
+      <!-- Карта с поисками -->
+      <div class="map-block">
+        <h3>Доступные поиски</h3>
+        <img src="https://tile.openstreetmap.org/10/560/380.png" alt="Карта" />
+        <div class="searches-list">
+        </div>
+      </div>
+
+      <!-- Работа с платформой -->
+      <div class="work-platform">
+        <h3>Работа с платформой</h3>
+        <div class="work-buttons">
+          <button on:click={showTips}>Советы по работе с сервисом</button>
+          <button on:click={startCourses}>Пройди курсы</button>
+          <button on:click={writeArticle}>Напиши статью</button>
+        </div>
+      </div>
+
+      <!-- Заявки на вакансии -->
+      <div class="applications">
+        <h3>Заявки на поиск</h3>
+        <a href="../search" id="applicationsList">
+          {#each applications as application, i}
+            <div class="application-card">
+              <strong>{application.name}</strong>
+              {#if application.date}
+                <p>Дата: {application.date}</p>
+              {/if}
+              {#if application.details}
+                <p>Детали: {application.details}</p>
+              {/if}
+            </div>
+          {/each}
+        </a>
+      </div>
+
+      <!-- Публикации -->
+      <div class="publications">
+        <h3>Публикации</h3>
+        <div id="publicationsGrid" class="publications-grid">
+          {#each publications as publication}
+            <div class="publication" on:click={() => alert(`Открыть ${publication.title}. Эта публикация про поиски в лесу`)}>
+              {publication.title}
+            </div>
+          {/each}
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Правая колонка -->
-  <div class="right">
-    <!-- Карта с поисками -->
-    <div class="map-block">
-      <h3>Доступные поиски</h3>
-      <img src="https://tile.openstreetmap.org/10/560/380.png" alt="Карта" />
-      <div class="searches-list">
-      </div>
-    </div>
-
-    <!-- Работа с платформой -->
-    <div class="work-platform">
-      <h3>Работа с платформой</h3>
-      <div class="work-buttons">
-        <button on:click={showTips}>Советы по работе с сервисом</button>
-        <button on:click={startCourses}>Пройди курсы</button>
-        <button on:click={writeArticle}>Напиши статью</button>
-      </div>
-    </div>
-
-    <!-- Заявки на вакансии -->
-    <div class="applications">
-      <h3>Заявки на поиск</h3>
-      <a href="../search" id="applicationsList">
-        {#each applications as application, i}
-          <div class="application-card">
-            <strong>{application.name}</strong>
-            {#if application.date}
-              <p>Дата: {application.date}</p>
-            {/if}
-            {#if application.details}
-              <p>Детали: {application.details}</p>
-            {/if}
-          </div>
-        {/each}
-        </a>
-    </div>
-
-    <!-- Публикации -->
-    <div class="publications">
-      <h3>Публикации</h3>
-      <div id="publicationsGrid" class="publications-grid">
-        {#each publications as publication}
-          <div class="publication" on:click={() => alert(`Открыть ${publication.title}. Эта публикация про поиски в лесу`)}>
-            {publication.title}
-          </div>
-        {/each}
-      </div>
-    </div>
+  <!-- Третий столбец - кнопка настроек -->
+  <div class="settings-column">
+    <a href="/volunteer" class="settings-button">⚙️ Настройки</a>
   </div>
 </div>
 
 <style>
+  /* Основной контейнер с тремя колонками */
+  .main-container {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* Контейнер для двух основных колонок */
+  .container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+  }
+
+  /* Столбец с настройками */
+  .settings-column {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+
   /* Стили для кнопки настроек */
   .settings-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
     background: #ff8800;
     color: white;
     text-decoration: none;
     padding: 12px 20px;
     border-radius: 25px;
     font-weight: bold;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     box-shadow: 0 2px 8px rgba(255, 136, 0, 0.3);
     transition: all 0.3s ease;
-    z-index: 1000;
+    width: auto;
+    white-space: nowrap;
   }
 
   .settings-button:hover {
@@ -175,14 +202,6 @@
     color: #111;
   }
 
-  .container {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
   /* Левая колонка */
   .profile {
     background: white;
@@ -193,19 +212,15 @@
     flex-direction: column;
     align-items: flex-start;
     height: fit-content;
-    position: state;
-    top: 20px;
   }
 
-    .profile1 {
+  .profile1 {
     border-radius: 20px;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     height: fit-content;
-    position: state;
-    top: 20px;
   }
 
   .avatar {
@@ -275,6 +290,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    padding: 20px;
   }
 
   .map-block {
@@ -296,48 +312,48 @@
     gap: 10px;
   }
 
-.application-card {
-  background: #f8f8f8;
-  border-radius: 10px;
-  padding: 15px;
-  border-left: 4px solid #ff8800;
-  cursor: pointer; /* Добавляем курсор указателя */
-  transition: all 0.3s ease; /* Плавные переходы */
-  border: none; /* Убираем стандартные границы если есть */
-  color: #111;
-  text-decoration: none;
-}
+  .application-card {
+    background: #f8f8f8;
+    border-radius: 10px;
+    padding: 15px;
+    border-left: 4px solid #ff8800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    color: #111;
+    text-decoration: none;
+  }
 
-.application-card:hover {
-  background: #ff8800; /* Меняем фон при наведении */
-  color: white; /* Меняем цвет текста */
-  transform: translateY(-2px); /* Легкий подъем */
-  box-shadow: 0 4px 8px rgba(255, 136, 0, 0.3); /* Тень при наведении */
-  text-decoration: none; 
-}
+  .application-card:hover {
+    background: #ff8800;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 136, 0, 0.3);
+    text-decoration: none;
+  }
 
-.application-card h4 {
-  margin: 0 0 8px 0;
-  color: #333;
-  text-decoration: none; 
-}
+  .application-card h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    text-decoration: none;
+  }
 
-.application-card:hover h4 {
-  color: white; /* Белый текст при наведении */
-  text-decoration: none; 
-}
+  .application-card:hover h4 {
+    color: white;
+    text-decoration: none;
+  }
 
-.application-card p {
-  margin: 4px 0;
-  font-size: 14px;
-  color: #666;
-  text-decoration: none; 
-}
+  .application-card p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #666;
+    text-decoration: none;
+  }
 
-.application-card:hover p {
-  color: white; /* Белый текст при наведении */
-  text-decoration: none; 
-}
+  .application-card:hover p {
+    color: white;
+    text-decoration: none;
+  }
 
   .location {
     color: #ff8800;
@@ -404,26 +420,43 @@
     background: #0011cc;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1200px) {
+    .main-container {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    .settings-column {
+      justify-content: center;
+      order: -1;
+    }
+    
     .container {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    position: relative;
+      grid-template-columns: 1fr;
     }
-    
-    .profile {
-      position: static;
-    }
-    
+  }
+
+  @media (max-width: 900px) {
     .work-buttons {
       flex-direction: column;
     }
     
     .publications-grid {
       flex-direction: column;
+    }
+  }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+    
+    .main-container {
+      gap: 15px;
+    }
+    
+    .container {
+      gap: 15px;
     }
   }
 </style>
